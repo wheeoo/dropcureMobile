@@ -1,0 +1,100 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.app.dropcure"
+4    android:versionCode="4001"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="20"
+8-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="28" />
+9-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:3:5-66
+11-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:3:22-64
+12
+13    <application
+13-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:4:5-42:19
+14        android:name="io.flutter.app.FlutterApplication"
+14-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:5:9-57
+15        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+15-->[androidx.core:core:1.0.0] C:\Users\dell\.gradle\caches\transforms-2\files-2.1\0a271e99b6771ad4a84318244d532fb7\core-1.0.0\AndroidManifest.xml:22:18-86
+16        android:icon="@mipmap/ic_launcher"
+16-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:7:9-43
+17        android:label="dropcure" >
+17-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:6:9-33
+18        <activity
+18-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:8:9-36:20
+19            android:name="com.app.dropcure.MainActivity"
+19-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:9:13-41
+20            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+20-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:12:13-163
+21            android:hardwareAccelerated="true"
+21-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:13:13-47
+22            android:launchMode="singleTop"
+22-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:10:13-43
+23            android:theme="@style/LaunchTheme"
+23-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:11:13-47
+24            android:windowSoftInputMode="adjustResize" >
+24-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:14:13-55
+25
+26            <!--
+27                 Specifies an Android theme to apply to this Activity as soon as
+28                 the Android process has started. This theme is visible to the user
+29                 while the Flutter UI initializes. After that, this theme continues
+30                 to determine the Window background behind the Flutter UI.
+31            -->
+32            <meta-data
+32-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:19:13-22:17
+33                android:name="io.flutter.embedding.android.NormalTheme"
+33-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:20:15-70
+34                android:resource="@style/NormalTheme" />
+34-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:21:15-52
+35            <!--
+36                 Displays an Android View that continues showing the launch screen
+37                 Drawable until Flutter paints its first frame, then this splash
+38                 screen fades out. A splash screen is useful to avoid any visual
+39                 gap between the end of Android's launch screen and the painting of
+40                 Flutter's first frame.
+41            -->
+42            <meta-data
+42-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:28:13-31:17
+43                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+43-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:29:15-79
+44                android:resource="@drawable/launch_background" />
+44-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:30:15-61
+45
+46            <intent-filter>
+46-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:32:13-35:29
+47                <action android:name="android.intent.action.MAIN" />
+47-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:33:17-68
+47-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:33:25-66
+48
+49                <category android:name="android.intent.category.LAUNCHER" />
+49-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:34:17-76
+49-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:34:27-74
+50            </intent-filter>
+51        </activity>
+52        <!--
+53             Don't delete the meta-data below.
+54             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+55        -->
+56        <meta-data
+56-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:39:9-41:33
+57            android:name="flutterEmbedding"
+57-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:40:13-44
+58            android:value="2" />
+58-->E:\FlutterPractice\dropcure\android\app\src\main\AndroidManifest.xml:41:13-30
+59
+60        <activity
+60-->[:url_launcher] E:\FlutterPractice\dropcure\build\url_launcher\intermediates\library_manifest\release\AndroidManifest.xml:8:9-11:74
+61            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+61-->[:url_launcher] E:\FlutterPractice\dropcure\build\url_launcher\intermediates\library_manifest\release\AndroidManifest.xml:9:13-74
+62            android:exported="false"
+62-->[:url_launcher] E:\FlutterPractice\dropcure\build\url_launcher\intermediates\library_manifest\release\AndroidManifest.xml:10:13-37
+63            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+63-->[:url_launcher] E:\FlutterPractice\dropcure\build\url_launcher\intermediates\library_manifest\release\AndroidManifest.xml:11:13-71
+64    </application>
+65
+66</manifest>
