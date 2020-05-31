@@ -1,2 +1,0 @@
-# dropcureMobile
-mobile repository!
