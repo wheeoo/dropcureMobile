@@ -52,23 +52,19 @@ class _HomeScreenState extends State<HomeScreen> {
       Response response =
           await dio.post(url.url + "homepage.php", data: userData);
       if (response.statusCode == 200) {
-        print("Homee" + response.data.toString());
         var data = json.decode(response.data);
         if (data["status"]) {
           Response directionPoints;
           Order tempOrder = Order.fromJson(data["data"]["order"]);
-          print(tempOrder.customerAddress);
           var destinationCoords;
           if (tempOrder.orderId != null) {
             try {
-              print("hello1");
               MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
               ForwardGeocoding forwardModel =
                   await geocoding.forwardModel(tempOrder.customerAddress);
               var a = forwardModel.toJson();
               destinationCoords = a["features"][0]["geometry"]["coordinates"];
             } catch (Excepetion) {
-              print(Excepetion);
               return 'Forward Geocoding Error';
             }
             directionPoints = await dio.get(
@@ -91,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 longitude: userLocation.longitude);
             order = tempOrder; //Order.fromJson(data["data"]["order"]);
             if (order.orderId == null) {
-              print("null");
               order = null;
               points = [];
             } else {
@@ -109,7 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
             location.changeSettings(interval: 5000);
             location.onLocationChanged
                 .listen((LocationData currentLocation) async {
-              print("location changed");
               if (mounted) {
                 Response response = await getPolylines(currentLocation);
                 setState(() {
@@ -124,12 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             });
           }
-        } else {
-          print("error");
         }
       }
     } catch (e) {
-      print(e);
       showDialog(
           context: context,
           builder: (ctx) {
@@ -199,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
           {"order_id": order.orderId, "user_id": userId, "type": action});
       Response response =
           await dio.post(url.url + "order_action.php", data: orderData);
-      print(response.data);
       Navigator.pop(loadContext);
       getdata();
     } catch (e) {
@@ -213,16 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void dispose() {
-    print("dispose");
-    super.dispose();
-  }
-
-  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-//    getLocation();
     getdata();
     initPlatformState();
   }
@@ -332,8 +315,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: () async {
-                            print(_origin);
-                            print(_destination);
                             await _directions.startNavigation(
                               origin: _origin,
                               destination: _destination,

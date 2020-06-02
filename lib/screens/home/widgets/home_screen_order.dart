@@ -16,7 +16,6 @@ class HomeScreenOrder extends StatefulWidget {
 class _HomeScreenOrderState extends State<HomeScreenOrder> {
   @override
   Widget build(BuildContext context) {
-    print(widget.order.userImage);
     return Container(
       margin: EdgeInsets.all(10),
       width: double.infinity,

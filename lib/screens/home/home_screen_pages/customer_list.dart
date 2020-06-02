@@ -27,7 +27,6 @@ class _CustomerListState extends State<CustomerList> {
   Map<String, dynamic> deliveries = {};
 
   getOrders() async {
-    print("get orders called");
     deliveries = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
@@ -40,8 +39,6 @@ class _CustomerListState extends State<CustomerList> {
       Response response =
           await dio.post(url.url + "get_all_order.php", data: userData);
       Map<String, dynamic> data = json.decode(response.data);
-      print("ORDERS------------------------");
-      print(data);
       OrderStatus order = OrderStatus.fromRawJson(response.data);
 
       if (order.status) {
@@ -73,14 +70,12 @@ class _CustomerListState extends State<CustomerList> {
                 () => data["data"]["order_count"]["cancel"]);
             deliveries.putIfAbsent("totalDeliveries",
                 () => data["data"]["order_count"]["deliveries"]);
-            print(deliveries);
           }
           ordersPresent = false;
           isLoaded = true;
         });
       }
     } catch (e) {
-      print(e);
       showDialog(
           context: context,
           builder: (ctx) {
@@ -105,7 +100,6 @@ class _CustomerListState extends State<CustomerList> {
           await dio.post(url.url + "order_action.php", data: orderData);
       getOrders();
     } catch (e) {
-      print(e);
       Fluttertoast.showToast(
           msg: "Something went wrong!",
           toastLength: Toast.LENGTH_SHORT,

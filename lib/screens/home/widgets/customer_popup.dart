@@ -72,9 +72,7 @@ class _CustomerPopupState extends State<CustomerPopup> {
               timeInSecForIosWeb: 2,
               fontSize: 16.0);
         }
-      } else {
-        print(response.statusMessage);
-      }
+      } else {}
     } catch (e) {
       Navigator.of(loadContext).pop();
       showDialog(
@@ -185,9 +183,7 @@ class _CustomerPopupState extends State<CustomerPopup> {
                       String url = "tel:" + widget.order.phoneNumber;
                       if (await canLaunch(url)) {
                         await launch(url);
-                      } else {
-                        print('Could not launch $url');
-                      }
+                      } else {}
                     },
                   ),
                 )
