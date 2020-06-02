@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:dropcure/Theme/colors.dart';
 import 'package:dropcure/Theme/url.dart';
 import 'package:dropcure/screens/home/widgets/delivery_count_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +27,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
     String id = prefs.getString('user_id');
     Dio dio = Dio();
     URL url = URL();
-    print("id" + id);
     FormData userData = new FormData.fromMap({
       "user_id": id,
     });
@@ -37,7 +35,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
         setState(() {
           var data = json.decode(value.data);
           details = data["data"];
-          print("Profile" + details.toString());
           dataMap["Completed"] =
               double.parse(details["order"]["complete"].toString());
           dataMap["Open"] = double.parse(details["order"]["open"].toString());
@@ -45,9 +42,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
               double.parse(details["order"]["cancel"].toString());
           isLoaded = true;
         });
-      } else {
-        print(value.statusCode);
-        print(value.statusMessage);
       }
     });
   }

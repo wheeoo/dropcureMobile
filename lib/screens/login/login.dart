@@ -63,8 +63,6 @@ class _LoginState extends State<Login> {
       if (data["status"]) {
         User user = User.fromJson(data["data"]);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        print(user.id);
-        print(data["data"]);
         prefs.setString('user_id', user.id.toString());
         prefs.setString('login_type', "google");
         Navigator.pop(loadContext);
@@ -98,7 +96,6 @@ class _LoginState extends State<Login> {
         final graphResponse = await dio.get(
             'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token');
         final profile = JSON.jsonDecode(graphResponse.data);
-        print(profile);
         BuildContext loadContext;
         showDialog(
             context: context,
@@ -127,7 +124,6 @@ class _LoginState extends State<Login> {
           if (data["status"]) {
             User user = User.fromJson(data["data"]);
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            print(user.id);
             prefs.setString('user_id', user.id.toString());
             prefs.setString('login_type', "fb");
             Navigator.pop(loadContext);
@@ -153,10 +149,8 @@ class _LoginState extends State<Login> {
         break;
 
       case FacebookLoginStatus.cancelledByUser:
-        print("cancelled");
         break;
       case FacebookLoginStatus.error:
-        print("error");
         print(result.errorMessage);
         break;
     }
@@ -210,7 +204,6 @@ class _LoginState extends State<Login> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('user_id', user.id.toString());
         prefs.setString('login_type', "email");
-        print(prefs.getKeys());
         Navigator.pop(loadContext);
         Navigator.of(context).pushReplacementNamed(
           HomePage.routeName,

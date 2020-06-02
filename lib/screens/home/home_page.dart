@@ -104,92 +104,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   void logout(ctx) async {
-    BuildContext loadContext;
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          loadContext = ctx;
-          return LoadingDialog("Logging out please wait..");
-        },
-        barrierDismissible: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String id = prefs.getString('user_id');
     String loginType = prefs.getString('login_type');
-    prefs.clear();
-    if (loginType.compareTo("google") == 0) {
-      print(googleSignIn.currentUser);
-      await googleSignIn.signOut().then((value) {
-        print("google");
-        Fluttertoast.showToast(
-            msg: "Successfully Logged Out",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-//        prefs.clear();
-        Navigator.pop(loadContext);
-        Navigator.of(ctx).pushReplacementNamed(Login.routeName);
-      });
-    } else if (loginType.compareTo("fb") == 0) {
-      print("fb");
-      await facebookLogin.logOut().then((value) {
-        Fluttertoast.showToast(
-            msg: "Successfully Logged Out",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 16.0);
-//        prefs.clear();
-        Navigator.pop(loadContext);
-        Navigator.of(ctx).pushReplacementNamed(Login.routeName);
-      });
-    } else {
-      try {
-        Dio dio = Dio();
-        URL url = URL();
-        FormData userData = new FormData.fromMap({
-          "user_id": id,
-        });
-        Response response =
-            await dio.post(url.url + "logout.php", data: userData);
-        if (response.statusCode == 200) {
-          if (json.decode(response.data)["status"]) {
-            Fluttertoast.showToast(
-                msg: json.decode(response.data)["message"],
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                fontSize: 16.0);
-//            prefs.clear();
-            Navigator.pop(loadContext);
-            Navigator.of(ctx).pushReplacementNamed(Login.routeName);
-          } else {
-            print("LOGOUT---------------------");
-            print(json.decode(response.data));
-            Fluttertoast.showToast(
-                msg: json.decode(response.data)["message"],
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                fontSize: 16.0);
-          }
-        }
-      } catch (e) {
-        Navigator.of(loadContext).pop();
-        showDialog(
-            context: context,
-            builder: (ctx) {
-              return RetryDialog("Something Went Wrong!", logout);
-            },
-            barrierDismissible: false);
+    try {
+      if (loginType.compareTo("google") == 0) {
+        await googleSignIn.signOut();
+      } else if (loginType.compareTo("fb") == 0) {
+        await facebookLogin.logOut();
       }
+      prefs.clear();
+      Fluttertoast.showToast(
+          msg: "Successfully Logged Out",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0);
+      Navigator.of(ctx).pushReplacementNamed(Login.routeName);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return RetryDialog("Something Went Wrong!", logout);
+          },
+          barrierDismissible: false);
     }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
