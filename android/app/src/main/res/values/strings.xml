@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dropcure</string>
+    <string name="facebook_app_id">2890113631087294</string>
+    <string name="fb_login_protocol_scheme">fb2890113631087294</string>
+    <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoiYWJoaXNoYWgzNjQ1IiwiYSI6ImNrOWNsenIzNDA1ZWMzZ3A1d21wNWJ2eTQifQ.WjNsAJAjUeTNWSxE_jQcQQ</string>
+    <string name="user_location_permission_explanation">This app needs location permissions to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+</resources>
