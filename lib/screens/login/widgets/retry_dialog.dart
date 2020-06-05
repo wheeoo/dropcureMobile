@@ -9,7 +9,6 @@ class RetryDialog extends StatelessWidget {
     return AlertDialog(
       title: Text(title),
       actions: <Widget>[
-        // usually buttons at the bottom of the dialog
         FlatButton(
           child: Text("Retry"),
           onPressed: () {

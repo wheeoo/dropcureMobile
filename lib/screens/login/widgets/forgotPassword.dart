@@ -33,7 +33,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           await dio.post(url.url + "forgot_password.php", data: userEmail);
       if (response.statusCode == 200) {
         var responseData = json.decode(response.data);
-        print(responseData["status"].runtimeType);
         if (responseData["status"]) {
           Navigator.of(loadContext).pop();
           Navigator.of(context).pop();
@@ -52,8 +51,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               timeInSecForIosWeb: 1,
               fontSize: 16.0);
         }
-      } else {
-        print(response.statusMessage);
       }
     } catch (e) {
       Navigator.of(loadContext).pop();

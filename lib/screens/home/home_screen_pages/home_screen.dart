@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 name: "Origin",
                 latitude: userLocation.latitude,
                 longitude: userLocation.longitude);
-            order = tempOrder; //Order.fromJson(data["data"]["order"]);
+            order = tempOrder;
             if (order.orderId == null) {
               order = null;
               points = [];
@@ -204,7 +204,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getdata();
     initPlatformState();
