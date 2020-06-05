@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:dropcure/Theme/colors.dart';
 import 'package:dropcure/Theme/url.dart';
 import 'package:dropcure/models/order.dart';

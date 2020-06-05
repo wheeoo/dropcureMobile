@@ -127,7 +127,6 @@ class _CustomerListState extends State<CustomerList> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getOrders();
   }

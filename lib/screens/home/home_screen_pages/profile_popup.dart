@@ -48,7 +48,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -178,11 +177,16 @@ class _ProfilePopupState extends State<ProfilePopup> {
                                                           ["phone_number"]
                                                       .toString()
                                                       .substring(0, 3) +
-                                                  ")" +
+                                                  ") " +
                                                   details["user"]
                                                           ["phone_number"]
                                                       .toString()
-                                                      .substring(3)
+                                                      .substring(3, 6) +
+                                                  "-" +
+                                                  details["user"]
+                                                          ["phone_number"]
+                                                      .toString()
+                                                      .substring(6)
                                               : ""),
                                         ],
                                       ),
@@ -196,7 +200,15 @@ class _ProfilePopupState extends State<ProfilePopup> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(details["user"]["car_name"]),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "Model: ",
+                                        style: labelStyle,
+                                      ),
+                                      Text(details["user"]["car_name"]),
+                                    ],
+                                  ),
                                   Row(
                                     children: <Widget>[
                                       Text(
@@ -222,120 +234,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
                         ),
                       ],
                     ),
-//                    Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                      children: <Widget>[
-//                        Container(
-//                          margin: EdgeInsets.only(right: 10),
-//                          height: 75,
-//                          width: 75,
-//                          decoration: BoxDecoration(
-//                            shape: BoxShape.circle,
-//                            border: Border.all(color: lightPinkColor),
-//                            image: DecorationImage(
-//                                image:
-//                                    NetworkImage(details["user"]["user_image"]),
-//                                fit: BoxFit.cover),
-//                          ),
-//                        ),
-//                        Column(
-//                          crossAxisAlignment: CrossAxisAlignment.start,
-//                          children: <Widget>[
-//                            Text(
-//                              "Agent: ",
-//                              style: labelStyle,
-//                            ),
-//                            Text(
-//                              "Access: ",
-//                              style: labelStyle,
-//                            ),
-//                            Text(
-//                              "Empid: ",
-//                              style: labelStyle,
-//                            ),
-//                            Text(
-//                              "Cell: ",
-//                              style: labelStyle,
-//                            ),
-//                          ],
-//                        ),
-//                        Column(
-//                          crossAxisAlignment: CrossAxisAlignment.start,
-//                          children: <Widget>[
-//                            Row(
-//                              children: <Widget>[
-//                                Text(details["user"]["full_name"]),
-//                              ],
-//                            ),
-//                            Row(
-//                              children: <Widget>[
-//                                Text(details["user"]["access"]),
-//                              ],
-//                            ),
-//                            Row(
-//                              children: <Widget>[
-//                                Text(details["user"]["id"]),
-//                              ],
-//                            ),
-//                            Row(
-//                              children: <Widget>[
-//                                Text(details["user"]["phone_number"]),
-//                              ],
-//                            ),
-//                          ],
-//                        )
-//                      ],
-//                    ),
-//                    SizedBox(
-//                      height: 24,
-//                    ),
-//                    Container(
-////                      margin: EdgeInsets.only(right: 10),
-//                      child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-//                        children: <Widget>[
-////                          Image.asset(
-////                            "assets/images/car.png",
-////                            height: 70,
-////                            width: 70,
-////                          ),
-//                          Container(
-//                            margin: EdgeInsets.only(right: 10),
-//                            height: 75,
-//                            width: 75,
-//                            decoration: BoxDecoration(
-//                              image: DecorationImage(
-//                                  image: AssetImage("assets/images/car.png"),
-//                                  fit: BoxFit.contain),
-//                            ),
-//                          ),
-//                          Column(
-//                            crossAxisAlignment: CrossAxisAlignment.start,
-//                            children: <Widget>[
-//                              Text(details["user"]["car_name"]),
-//                              Row(
-//                                children: <Widget>[
-//                                  Text(
-//                                    "Plate: ",
-//                                    style: labelStyle,
-//                                  ),
-//                                  Text(details["user"]["car_plate"]),
-//                                ],
-//                              ),
-//                              Row(
-//                                children: <Widget>[
-//                                  Text(
-//                                    "Color: ",
-//                                    style: labelStyle,
-//                                  ),
-//                                  Text(details["user"]["car_color"]),
-//                                ],
-//                              ),
-//                            ],
-//                          ),
-//                        ],
-//                      ),
-//                    ),
                     SizedBox(
                       height: 18,
                     ),
@@ -356,7 +254,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
                       height: 25,
                     ),
                     Container(
-//                padding: EdgeInsets.all(10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

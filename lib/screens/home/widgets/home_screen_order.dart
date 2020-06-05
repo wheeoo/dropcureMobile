@@ -41,7 +41,6 @@ class _HomeScreenOrderState extends State<HomeScreenOrder> {
                   margin: EdgeInsets.all(10),
                   child: Card(
                     elevation: 0.0,
-//                    color: Colors.transparent,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: FadeInImage.assetNetwork(
@@ -49,10 +48,6 @@ class _HomeScreenOrderState extends State<HomeScreenOrder> {
                         image: widget.order.userImage,
                         fit: BoxFit.cover,
                       ),
-//                      Image.network(
-//                        widget.order.userImage,
-//                        fit: BoxFit.cover,
-//                      ),
                     ),
                   ),
                 ),
