@@ -49,8 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
       FormData userData = new FormData.fromMap({
         "user_id": id,
       });
-      Response response =
-          await dio.post(url.url + "homepage.php", data: userData);
+      Response response = await dio.post(url.url + "homepage.php", data: {
+        "user_id": id,
+      });
       if (response.statusCode == 200) {
         var data = json.decode(response.data);
         if (data["status"]) {
@@ -121,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     } catch (e) {
+      print(e);
       showDialog(
           context: context,
           builder: (ctx) {

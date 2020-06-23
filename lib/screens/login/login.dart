@@ -185,46 +185,46 @@ class _LoginState extends State<Login> {
           return LoadingDialog("Logging in please wait..");
         },
         barrierDismissible: false);
-    try {
-      Dio dio = Dio();
-      URL url = URL();
-      String email = emailController.text.trim().toLowerCase();
-      String password = passwordController.text.trim();
-      String deviceType = Platform.isAndroid ? "A" : Platform.isIOS ? "I" : "";
-      FormData userData = new FormData.fromMap({
-        "username": email,
-        "password": password,
-        "device_type": deviceType,
-        "device_token": await _getId(),
-      });
-      Response response = await dio.post(url.url + "login.php", data: userData);
-      var data = json.decode(response.data);
-      if (data["status"]) {
-        User user = User.fromJson(data["data"]);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('user_id', user.id.toString());
-        prefs.setString('login_type', "email");
-        Navigator.pop(loadContext);
-        Navigator.of(context).pushReplacementNamed(
-          HomePage.routeName,
-        );
-      } else {
-        Navigator.pop(loadContext);
-        showDialog(
-            context: context,
-            builder: (ctx) {
-              return ShowAlert("Error Logging in!", data["message"].toString());
-            });
-      }
-    } catch (e) {
-      Navigator.of(loadContext).pop();
+//    try {
+    Dio dio = Dio();
+    URL url = URL();
+    String email = emailController.text.trim().toLowerCase();
+    String password = passwordController.text.trim();
+    String deviceType = Platform.isAndroid ? "A" : Platform.isIOS ? "I" : "";
+    FormData userData = new FormData.fromMap({
+      "username": email,
+      "password": password,
+      "device_type": deviceType,
+      "device_token": await _getId(),
+    });
+    Response response = await dio.post(url.url + "login.php", data: userData);
+    var data = json.decode(response.data);
+    if (data["status"]) {
+      User user = User.fromJson(data["data"]);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('user_id', user.id.toString());
+      prefs.setString('login_type', "email");
+      Navigator.pop(loadContext);
+      Navigator.of(context).pushReplacementNamed(
+        HomePage.routeName,
+      );
+    } else {
+      Navigator.pop(loadContext);
       showDialog(
           context: context,
           builder: (ctx) {
-            return RetryDialog("Something Went Wrong!", login);
-          },
-          barrierDismissible: false);
+            return ShowAlert("Error Logging in!", data["message"].toString());
+          });
     }
+//    } catch (e) {
+//      Navigator.of(loadContext).pop();
+//      showDialog(
+//          context: context,
+//          builder: (ctx) {
+//            return RetryDialog("Something Went Wrong!", login);
+//          },
+//          barrierDismissible: false);
+//    }
   }
 
   @override
