@@ -1,13 +1,10 @@
-import 'dart:convert';
 
 import 'package:dropcure/Theme/colors.dart';
-import 'package:dropcure/Theme/url.dart';
 import 'package:dropcure/models/order.dart';
 import 'package:dropcure/screens/home/home_screen_pages/customer_list.dart';
 import 'package:dropcure/screens/home/home_screen_pages/home_screen.dart';
 import 'package:dropcure/screens/home/home_screen_pages/profile_popup.dart';
 import 'package:dropcure/screens/login/login.dart';
-import 'package:dropcure/screens/login/widgets/loading_dialog.dart';
 import 'package:dropcure/screens/login/widgets/retry_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
