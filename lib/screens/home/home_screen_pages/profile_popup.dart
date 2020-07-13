@@ -206,7 +206,9 @@ class _ProfilePopupState extends State<ProfilePopup> {
                                         "Model: ",
                                         style: labelStyle,
                                       ),
-                                      Text(details["user"]["car_name"]),
+                                      Text(details["user"]["car_name"] +
+                                          " " +
+                                          details["user"]["car_model"]),
                                     ],
                                   ),
                                   Row(

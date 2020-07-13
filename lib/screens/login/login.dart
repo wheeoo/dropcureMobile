@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:convert' as JSON;
 import 'dart:io' show Platform;
 
 import 'package:device_info/device_info.dart';
@@ -13,9 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import './widgets/forgotPassword.dart';
 import './widgets/retry_dialog.dart';
-import 'dart:convert' as JSON;
 
 class Login extends StatefulWidget {
   static const routeName = "/login";
@@ -74,6 +75,7 @@ class _LoginState extends State<Login> {
             builder: (ctx) {
               return ShowAlert("Error Logging in!", data["message"].toString());
             });
+        await _googleSignIn.signOut();
       }
     } catch (e) {
       Navigator.of(loadContext).pop();

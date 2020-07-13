@@ -95,9 +95,23 @@ class _CustomerPopupState extends State<CustomerPopup> {
     }
     if (!widget.submit) {
       isEditable = false;
-      dropNoController.text = widget.order.dropNo ?? "";
-      noteController.text = widget.order.notes ?? "";
+      print("here");
+      if (widget.order.orderStatus.toString() == "3") {
+        print("here also");
+        if (widget.order.noteStatus.toString() == "0") {
+          dropNoController.text = "";
+          noteController.text = "";
+          isEditable = true;
+          widget.submit = true;
+        } else {
+          print("here again");
+        }
+      } else {
+        dropNoController.text = widget.order.dropNo ?? "";
+        noteController.text = widget.order.notes ?? "";
+      }
     }
+
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       scrollable: true,

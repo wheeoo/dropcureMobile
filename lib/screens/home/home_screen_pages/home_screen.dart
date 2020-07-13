@@ -49,9 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
       FormData userData = new FormData.fromMap({
         "user_id": id,
       });
-      Response response = await dio.post(url.url + "homepage.php", data: {
-        "user_id": id,
-      });
+      Response response =
+          await dio.post(url.url + "homepage.php", data: userData);
       if (response.statusCode == 200) {
         var data = json.decode(response.data);
         if (data["status"]) {
@@ -66,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
               var a = forwardModel.toJson();
               destinationCoords = a["features"][0]["geometry"]["coordinates"];
             } catch (Excepetion) {
+              print("error");
               return 'Forward Geocoding Error';
             }
             directionPoints = await dio.get(
@@ -119,7 +119,12 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             });
           }
+        } else {
+          print("not ok");
+          print(data);
         }
+      } else {
+        print("not 200");
       }
     } catch (e) {
       print(e);
@@ -316,13 +321,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: () async {
-                            await _directions.startNavigation(
-                              origin: _origin,
-                              destination: _destination,
-                              mode: Loc.NavigationMode.drivingWithTraffic,
-                              language: "English",
-                              units: Loc.VoiceUnits.metric,
-                            );
+                            try {
+                              await _directions.startNavigation(
+                                origin: _origin,
+                                destination: _destination,
+                                mode: Loc.NavigationMode.drivingWithTraffic,
+                                language: "English",
+                                units: Loc.VoiceUnits.metric,
+                              );
+                            }catch(e){
+                              print(e);
+                            }
                           },
                         ),
                       ),

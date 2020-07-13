@@ -9,6 +9,7 @@ import 'package:dropcure/screens/home/widgets/change_status_alert.dart';
 import 'package:dropcure/screens/home/widgets/delivery_count_widget.dart';
 import 'package:dropcure/screens/home/widgets/info_card.dart';
 import 'package:dropcure/screens/login/widgets/retry_dialog.dart';
+import 'package:dropcure/screens/login/widgets/show_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -98,7 +99,17 @@ class _CustomerListState extends State<CustomerList> {
       });
       Response response =
           await dio.post(url.url + "order_action.php", data: orderData);
-      getOrders();
+      var data = json.decode(response.data);
+      if (data["status"]) {
+        getOrders();
+      } else {
+        showDialog(
+            context: context,
+            builder: (ctx) {
+              return ShowAlert(
+                  "Error Changing Status!", data["message"].toString());
+            });
+      }
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Something went wrong!",
@@ -114,6 +125,15 @@ class _CustomerListState extends State<CustomerList> {
     if (orders[index].orderStatus.toString().compareTo("1") == 0) {
       msg = "cancel";
     } else if (orders[index].orderStatus.toString().compareTo("3") == 0) {
+      if (orders[index].noteStatus.toString() == "0") {
+        Fluttertoast.showToast(
+            msg: "Verify drop number!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+        return;
+      }
       msg = "complete";
     } else {
       return;
