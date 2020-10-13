@@ -37,6 +37,7 @@ class _CustomerListState extends State<CustomerList> {
       FormData userData = new FormData.fromMap({
         "user_id": id,
       });
+      print("id" + id);
       Response response =
           await dio.post(url.url + "get_all_order.php", data: userData);
       Map<String, dynamic> data = json.decode(response.data);
@@ -166,9 +167,21 @@ class _CustomerListState extends State<CustomerList> {
                   width: screenWidth,
                   color: Colors.white,
                   child: Center(
-                      child: Text(
-                    currentDate,
-                    style: TextStyle(fontSize: 16),
+                      child: Column(
+                    children: [
+                      Text(
+                        "Completed Deliveries",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        currentDate,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ))),
               Container(
                 padding: EdgeInsets.only(bottom: 10),

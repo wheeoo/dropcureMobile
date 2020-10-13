@@ -6,7 +6,6 @@ import 'package:dropcure/Theme/url.dart';
 import 'package:dropcure/models/order.dart';
 import 'package:dropcure/screens/home/widgets/home_screen_order.dart';
 import 'package:dropcure/screens/login/widgets/loading_dialog.dart';
-import 'package:dropcure/screens/login/widgets/retry_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart'
@@ -43,98 +42,101 @@ class _HomeScreenState extends State<HomeScreen> {
     var locationData = await location.getLocation();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
-    try {
-      Dio dio = Dio();
-      URL url = URL();
-      FormData userData = new FormData.fromMap({
-        "user_id": id,
-      });
-      Response response =
-          await dio.post(url.url + "homepage.php", data: userData);
-      if (response.statusCode == 200) {
-        var data = json.decode(response.data);
-        if (data["status"]) {
-          Response directionPoints;
-          Order tempOrder = Order.fromJson(data["data"]["order"]);
-          var destinationCoords;
-          if (tempOrder.orderId != null) {
-            try {
-              MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
-              ForwardGeocoding forwardModel =
-                  await geocoding.forwardModel(tempOrder.customerAddress);
-              var a = forwardModel.toJson();
-              destinationCoords = a["features"][0]["geometry"]["coordinates"];
-            } catch (Excepetion) {
-              print("error");
-              return 'Forward Geocoding Error';
-            }
-            directionPoints = await dio.get(
-                "https://api.mapbox.com/directions/v5/mapbox/driving/" +
-                    locationData.longitude.toString() +
-                    "," +
-                    locationData.latitude.toString() +
-                    ";" +
-                    destinationCoords[0].toString() +
-                    "," +
-                    destinationCoords[1].toString() +
-                    "?geometries=geojson&access_token=" +
-                    _accessToken);
+//    try {
+    Dio dio = Dio();
+    URL url = URL();
+    FormData userData = new FormData.fromMap({
+      "user_id": id,
+    });
+    print(id);
+    Response response =
+        await dio.post(url.url + "homepage.php", data: userData);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if (data["status"]) {
+        Response directionPoints;
+        Order tempOrder = Order.fromJson(data["data"]["order"]);
+        var destinationCoords;
+        if (tempOrder.orderId != null) {
+//          try {
+          MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
+          print(tempOrder.customerAddress);
+          print(tempOrder.city);
+          ForwardGeocoding forwardModel =
+              await geocoding.forwardModel(tempOrder.customerAddress);
+
+          var a = forwardModel.toJson();
+          destinationCoords = a["features"][0]["geometry"]["coordinates"];
+//          } catch (e) {
+//            print("error" + e.toString());
+//            return 'Forward Geocoding Error';
+//          }
+          directionPoints = await dio.get(
+              "https://api.mapbox.com/directions/v5/mapbox/driving/" +
+                  locationData.longitude.toString() +
+                  "," +
+                  locationData.latitude.toString() +
+                  ";" +
+                  destinationCoords[0].toString() +
+                  "," +
+                  destinationCoords[1].toString() +
+                  "?geometries=geojson&access_token=" +
+                  _accessToken);
+        }
+        setState(() {
+          userLocation = locationData;
+          _origin = Loc.Location(
+              name: "Origin",
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude);
+          order = tempOrder;
+          if (order.orderId == null) {
+            order = null;
+            points = [];
+          } else {
+            orderLoc = destinationCoords;
+            points =
+                directionPoints.data["routes"][0]["geometry"]["coordinates"];
+            _destination = Loc.Location(
+                name: "Destination",
+                latitude: double.parse(orderLoc[1].toString()),
+                longitude: double.parse(orderLoc[0].toString()));
           }
-          setState(() {
-            userLocation = locationData;
-            _origin = Loc.Location(
-                name: "Origin",
-                latitude: userLocation.latitude,
-                longitude: userLocation.longitude);
-            order = tempOrder;
-            if (order.orderId == null) {
-              order = null;
-              points = [];
-            } else {
-              orderLoc = destinationCoords;
-              points =
-                  directionPoints.data["routes"][0]["geometry"]["coordinates"];
-              _destination = Loc.Location(
-                  name: "Destination",
-                  latitude: double.parse(orderLoc[1].toString()),
-                  longitude: double.parse(orderLoc[0].toString()));
+          isLoaded = true;
+        });
+        if (order != null) {
+          location.changeSettings(interval: 5000);
+          location.onLocationChanged
+              .listen((LocationData currentLocation) async {
+            if (mounted) {
+              Response response = await getPolylines(currentLocation);
+              setState(() {
+                points = response.data["routes"][0]["geometry"]["coordinates"];
+                userLocation = currentLocation;
+                _origin = Loc.Location(
+                    name: "Origin",
+                    latitude: userLocation.latitude,
+                    longitude: userLocation.longitude);
+              });
             }
-            isLoaded = true;
           });
-          if (order != null) {
-            location.changeSettings(interval: 5000);
-            location.onLocationChanged
-                .listen((LocationData currentLocation) async {
-              if (mounted) {
-                Response response = await getPolylines(currentLocation);
-                setState(() {
-                  points =
-                      response.data["routes"][0]["geometry"]["coordinates"];
-                  userLocation = currentLocation;
-                  _origin = Loc.Location(
-                      name: "Origin",
-                      latitude: userLocation.latitude,
-                      longitude: userLocation.longitude);
-                });
-              }
-            });
-          }
-        } else {
-          print("not ok");
-          print(data);
         }
       } else {
-        print("not 200");
+        print("not ok");
+        print(data);
       }
-    } catch (e) {
-      print(e);
-      showDialog(
-          context: context,
-          builder: (ctx) {
-            return RetryDialog("Something Went Wrong!", getdata);
-          },
-          barrierDismissible: false);
+    } else {
+      print("not 200");
     }
+//    } catch (e) {
+//      print(e);
+//      showDialog(
+//          context: context,
+//          builder: (ctx) {
+//            return RetryDialog("Something Went Wrong!", getdata);
+//          },
+//          barrierDismissible: false);
+//    }
   }
 
   Future<Response> getPolylines(currentLocation) async {
@@ -329,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 language: "English",
                                 units: Loc.VoiceUnits.metric,
                               );
-                            }catch(e){
+                            } catch (e) {
                               print(e);
                             }
                           },
