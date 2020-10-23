@@ -1,6 +1,7 @@
 import 'package:dropcure/models/order.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'customer_popup.dart';
 
 class InfoCard extends StatefulWidget {
@@ -43,27 +44,21 @@ class _InfoCardState extends State<InfoCard> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              widget.counter.toString().length == 1
-                  ? "0" + widget.counter.toString()
-                  : widget.counter.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              widget.counter.toString().padLeft(2, "0"),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
           GestureDetector(
             child: Container(
-              height: 60,
-              width: 60,
+              height: 70,
+              width: 70,
               margin: EdgeInsets.all(10),
-              child: Card(
-                elevation: 7,
-                color: Colors.transparent,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: "assets/images/alt.jpeg",
-                    image: widget.order.userImage,
-                    fit: BoxFit.cover,
-                  ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(35),
+                child: FadeInImage.assetNetwork(
+                  placeholder: "assets/images/alt.jpeg",
+                  image: widget.order.userImage,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -82,38 +77,49 @@ class _InfoCardState extends State<InfoCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  SizedBox(
+                    height: 5,
+                  ),
                   Text(
                     widget.order.orderId,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 5),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          widget.order.city + ", ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          widget.order.state,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: Text(
+                      "Location",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        widget.order.city + ", ",
+                      ),
+                      Text(
+                        widget.order.state,
+                      ),
+                    ],
                   ),
                   Container(
                     padding: EdgeInsets.only(bottom: 5),
                     child: Text(
                       widget.order.zipCode,
-                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
+                  ),
+                  Text(
+                    getColor() == Colors.green ? "Delivered" : "Cancelled",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   FittedBox(
                     child: Text(
                       widget.order.date,
-                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
                 ],
               ),
             ),
@@ -121,8 +127,8 @@ class _InfoCardState extends State<InfoCard> {
           Expanded(
             flex: 1,
             child: Container(
-              height: 30,
-              width: 30,
+              height: 40,
+              width: 40,
               decoration:
                   BoxDecoration(shape: BoxShape.circle, color: getColor()),
             ),
