@@ -58,19 +58,32 @@ class _HomeScreenState extends State<HomeScreen> {
         Order tempOrder = Order.fromJson(data["data"]["order"]);
         var destinationCoords;
         if (tempOrder.orderId != null) {
-//          try {
-          MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
-          print(tempOrder.customerAddress);
-          print(tempOrder.city);
-          ForwardGeocoding forwardModel =
-              await geocoding.forwardModel(tempOrder.customerAddress);
+          try {
+            MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
+            print(tempOrder.customerAddress);
+            print(tempOrder.state);
+            print(tempOrder.city);
+            ForwardGeocoding forwardModel =
+                await geocoding.forwardModel(tempOrder.customerAddress);
 
-          var a = forwardModel.toJson();
-          destinationCoords = a["features"][0]["geometry"]["coordinates"];
-//          } catch (e) {
-//            print("error" + e.toString());
-//            return 'Forward Geocoding Error';
-//          }
+            var a = forwardModel.toJson();
+            print("DATA");
+            a["features"].forEach((e) {
+              if (e["context"][e["context"].length - 2]["short_code"]
+                  .toString()
+                  .toLowerCase()
+                  .contains(tempOrder.state.toString().toLowerCase())) {
+                print(e);
+                destinationCoords = e["geometry"]["coordinates"];
+              }
+              print(destinationCoords);
+            });
+          } catch (e) {
+            print("error" + e.toString());
+            return 'Forward Geocoding Error';
+          }
+          print(destinationCoords[0].toString());
+          print(destinationCoords[1].toString());
           directionPoints = await dio.get(
               "https://api.mapbox.com/directions/v5/mapbox/driving/" +
                   locationData.longitude.toString() +
@@ -140,6 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<Response> getPolylines(currentLocation) async {
+    print("https://api.mapbox.com/directions/v5/mapbox/driving/" +
+        currentLocation.longitude.toString() +
+        "," +
+        currentLocation.latitude.toString() +
+        ";" +
+        orderLoc[0].toString() +
+        "," +
+        orderLoc[1].toString() +
+        "?geometries=geojson&access_token=" +
+        _accessToken);
     Dio dio = Dio();
     var directionPoints = await dio.get(
         "https://api.mapbox.com/directions/v5/mapbox/driving/" +
@@ -247,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               userLocation.longitude,
                             )
                           : null,
-                      zoom: 13.0,
+                      zoom: 5.0,
                     ),
                     layers: [
                       TileLayerOptions(
