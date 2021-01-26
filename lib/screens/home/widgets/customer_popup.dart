@@ -86,6 +86,7 @@ class _CustomerPopupState extends State<CustomerPopup> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.order.dropNo);
     if (widget.order.noteStatus.toString() == "0") {
       isEditable = true;
     } else {
@@ -96,7 +97,8 @@ class _CustomerPopupState extends State<CustomerPopup> {
     if (!widget.submit) {
       isEditable = false;
       print("here");
-      if (widget.order.orderStatus.toString() == "3") {
+      if (widget.order.orderStatus.toString() == "3" ||
+          widget.order.orderStatus.toString() == "0") {
         print("here also");
         if (widget.order.noteStatus.toString() == "0") {
           dropNoController.text = "";
@@ -176,9 +178,13 @@ class _CustomerPopupState extends State<CustomerPopup> {
                             "Order: ",
                             style: labelStyle,
                           ),
-                          Text(
-                            widget.order.orderId,
-                            style: labelStyle,
+                          Expanded(
+                            child: FittedBox(
+                              child: Text(
+                                widget.order.orderId,
+                                style: labelStyle,
+                              ),
+                            ),
                           ),
                         ],
                       ),

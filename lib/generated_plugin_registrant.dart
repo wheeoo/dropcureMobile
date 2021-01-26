@@ -2,8 +2,7 @@
 // Generated file. Do not edit.
 //
 
-// ignore: unused_import
-import 'dart:ui';
+// ignore_for_file: lines_longer_than_80_chars
 
 import 'package:fluttertoast/fluttertoast_web.dart';
 import 'package:google_sign_in_web/google_sign_in_web.dart';
@@ -14,11 +13,11 @@ import 'package:url_launcher_web/url_launcher_web.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 // ignore: public_member_api_docs
-void registerPlugins(PluginRegistry registry) {
-  FluttertoastWebPlugin.registerWith(registry.registrarFor(FluttertoastWebPlugin));
-  GoogleSignInPlugin.registerWith(registry.registrarFor(GoogleSignInPlugin));
-  LocationWebPlugin.registerWith(registry.registrarFor(LocationWebPlugin));
-  SharedPreferencesPlugin.registerWith(registry.registrarFor(SharedPreferencesPlugin));
-  UrlLauncherPlugin.registerWith(registry.registrarFor(UrlLauncherPlugin));
-  registry.registerMessageHandler();
+void registerPlugins(Registrar registrar) {
+  FluttertoastWebPlugin.registerWith(registrar);
+  GoogleSignInPlugin.registerWith(registrar);
+  LocationWebPlugin.registerWith(registrar);
+  SharedPreferencesPlugin.registerWith(registrar);
+  UrlLauncherPlugin.registerWith(registrar);
+  registrar.registerMessageHandler();
 }
