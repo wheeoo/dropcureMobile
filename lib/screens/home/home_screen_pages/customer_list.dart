@@ -22,12 +22,16 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   List<Order> orders;
+  List<Order> filteredOrders;
   bool isLoaded = false;
   bool ordersPresent = false;
   DateTime now = DateTime.now();
   Map<String, dynamic> deliveries = {};
-
+  int selectedOrder = -1;
+  int c = -1;
+  final ScrollController _scrollController = ScrollController();
   getOrders() async {
+    c++;
     deliveries = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
@@ -37,7 +41,6 @@ class _CustomerListState extends State<CustomerList> {
       FormData userData = new FormData.fromMap({
         "user_id": id,
       });
-      print("id" + id);
       Response response =
           await dio.post(url.url + "get_all_order.php", data: userData);
       Map<String, dynamic> data = json.decode(response.data);
@@ -54,6 +57,8 @@ class _CustomerListState extends State<CustomerList> {
           deliveries.putIfAbsent("totalDeliveries",
               () => data["data"]["order_count"]["deliveries"]);
           orders = order.data;
+          // filteredOrders = List.from(orders);
+          filterList(selectedOrder);
           if (orders.length < 1) {
             ordersPresent = false;
           } else {
@@ -94,7 +99,7 @@ class _CustomerListState extends State<CustomerList> {
       Dio dio = Dio();
       URL url = URL();
       FormData orderData = new FormData.fromMap({
-        "order_id": orders[index].orderId,
+        "order_id": filteredOrders[index].orderId,
         "user_id": userId,
         "type": action
       });
@@ -122,11 +127,14 @@ class _CustomerListState extends State<CustomerList> {
   }
 
   changeOrderStatus(index) {
+    print(filteredOrders[index].dropNo);
     String msg = "";
-    if (orders[index].orderStatus.toString().compareTo("1") == 0) {
+    if (filteredOrders[index].orderStatus.toString().compareTo("1") == 0) {
       msg = "cancel";
-    } else if (orders[index].orderStatus.toString().compareTo("3") == 0) {
-      if (orders[index].noteStatus.toString() == "0") {
+    } else if (filteredOrders[index].orderStatus.toString().compareTo("3") ==
+            0 ||
+        filteredOrders[index].orderStatus.toString().compareTo("0") == 0) {
+      if (filteredOrders[index].noteStatus.toString() == "0") {
         Fluttertoast.showToast(
             msg: "Verify drop number!",
             toastLength: Toast.LENGTH_SHORT,
@@ -152,6 +160,42 @@ class _CustomerListState extends State<CustomerList> {
     getOrders();
   }
 
+  filterList(int orderStatus) {
+    setState(() {
+      selectedOrder = orderStatus;
+      if (orderStatus == -1) {
+        filteredOrders = List.from(orders);
+      } else if (orderStatus == 2) {
+        filteredOrders = List.from(orders.where((element) =>
+            int.parse(element.orderStatus) == 2 ||
+            int.parse(element.orderStatus) == 3));
+      } else {
+        filteredOrders = List.from(orders
+            .where((element) => int.parse(element.orderStatus) == orderStatus));
+      }
+      if (c > 0) {
+        _scrollController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      }
+    });
+  }
+
+  order(index) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: GestureDetector(
+        child: InfoCard(filteredOrders[index], index + 1, getOrders),
+        onTap: () {
+          if (filteredOrders[index].orderStatus != "0")
+            changeOrderStatus(index);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String currentDate = DateFormat('EEEE, MMMM d yyyy').format(now);
@@ -162,12 +206,12 @@ class _CustomerListState extends State<CustomerList> {
         ? Column(
             children: <Widget>[
               Container(
-                  margin: EdgeInsets.only(top: 15),
-                  padding: EdgeInsets.only(top: 5, bottom: 20),
-                  width: screenWidth,
-                  color: Colors.white,
-                  child: Center(
-                      child: Column(
+                margin: EdgeInsets.only(top: 15),
+                padding: EdgeInsets.only(top: 5, bottom: 20),
+                width: screenWidth,
+                color: Colors.white,
+                child: Center(
+                  child: Column(
                     children: [
                       Text(
                         "Completed Deliveries",
@@ -182,14 +226,20 @@ class _CustomerListState extends State<CustomerList> {
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
-                  ))),
+                  ),
+                ),
+              ),
               Container(
                 padding: EdgeInsets.only(bottom: 10),
                 child: DeliveryCountWidget(
-                    deliveries["totalDeliveries"] ??= 0,
-                    deliveries["completedDeliveries"] ??= 0,
-                    deliveries["openDeliveries"] ??= 0,
-                    deliveries["cancelledDeliveries"] ??= 0),
+                  deliveries["totalDeliveries"] ??= 0,
+                  deliveries["completedDeliveries"] ??= 0,
+                  deliveries["openDeliveries"] ??= 0,
+                  deliveries["cancelledDeliveries"] ??= 0,
+                  isClickable: true,
+                  onClick: filterList,
+                  selected: selectedOrder,
+                ),
                 color: Colors.white,
               ),
               SizedBox(
@@ -198,18 +248,10 @@ class _CustomerListState extends State<CustomerList> {
               Expanded(
                 child: ordersPresent
                     ? ListView.builder(
-                        itemCount: orders.length,
+                        controller: _scrollController,
+                        itemCount: filteredOrders.length,
                         itemBuilder: (ctx, index) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: GestureDetector(
-                              child:
-                                  InfoCard(orders[index], index + 1, getOrders),
-                              onTap: () {
-                                changeOrderStatus(index);
-                              },
-                            ),
-                          );
+                          return order(index);
                         },
                       )
                     : Center(

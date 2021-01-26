@@ -66,6 +66,7 @@ class _InfoCardState extends State<InfoCard> {
               showDialog(
                   context: context,
                   builder: (ctx) {
+                    print(widget.order.noteStatus);
                     return CustomerPopup(widget.order, widget.getOrders, false);
                   });
             },
@@ -109,7 +110,11 @@ class _InfoCardState extends State<InfoCard> {
                     ),
                   ),
                   Text(
-                    getColor() == Colors.green ? "Delivered" : "Cancelled",
+                    getColor() == Colors.green
+                        ? "Delivered"
+                        : getColor() == Colors.blue
+                            ? "Open"
+                            : "Cancelled",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   FittedBox(

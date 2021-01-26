@@ -38,16 +38,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Loc.MapboxNavigation _directions;
   MapController mapController = MapController();
   Location location = new Location();
-  getdata() async {
+  getData({orderId}) async {
     var locationData = await location.getLocation();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
-//    try {
+    // try {
     Dio dio = Dio();
     URL url = URL();
-    FormData userData = new FormData.fromMap({
-      "user_id": id,
-    });
+    var params = {"user_id": id};
+    if (orderId != null) {
+      params.addAll({"order_id": orderId});
+    }
+    FormData userData = new FormData.fromMap(params);
+    print(userData.fields);
     print(id);
     Response response =
         await dio.post(url.url + "homepage.php", data: userData);
@@ -58,43 +61,108 @@ class _HomeScreenState extends State<HomeScreen> {
         Order tempOrder = Order.fromJson(data["data"]["order"]);
         var destinationCoords;
         if (tempOrder.orderId != null) {
-          try {
-            MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
-            print(tempOrder.customerAddress);
-            print(tempOrder.state);
-            print(tempOrder.city);
-            ForwardGeocoding forwardModel =
-                await geocoding.forwardModel(tempOrder.customerAddress);
+          // try {
+          MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
+          ForwardGeocoding forwardModel = await geocoding.forwardModel(
+              tempOrder.customerAddress +
+                  " " +
+                  tempOrder.state.toString().toUpperCase());
+          print("ADDRESS");
+          print(tempOrder.customerAddress);
+          print(tempOrder.orderId);
+          print(tempOrder.state);
+          // print(forwardModel.toJson());
+          if (forwardModel != null &&
+              tempOrder.customerAddress != null &&
+              tempOrder.customerAddress.toString().isNotEmpty &&
+              tempOrder.state != null &&
+              tempOrder.state.toString().isNotEmpty) {
+            /*
 
-            var a = forwardModel.toJson();
-            print("DATA");
-            a["features"].forEach((e) {
-              if (e["context"][e["context"].length - 2]["short_code"]
+               */
+            print(forwardModel.toJson());
+            for (var i = 0; i < forwardModel.features.length; i++) {
+              var j = forwardModel.features[i].context.length - 2;
+              if (forwardModel.features[i].context[j].shortCode
                   .toString()
                   .toLowerCase()
                   .contains(tempOrder.state.toString().toLowerCase())) {
-                print(e);
-                destinationCoords = e["geometry"]["coordinates"];
+                print("YES");
+                destinationCoords =
+                    forwardModel.features[i].geometry.coordinates;
+                break;
               }
-              print(destinationCoords);
-            });
-          } catch (e) {
-            print("error" + e.toString());
-            return 'Forward Geocoding Error';
+            }
+            print("AAJO");
+            print(destinationCoords);
+          } else {
+            await showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text("Cannot Fetch Location"),
+                content:
+                    Text("Order id ${tempOrder.orderId} has invalid address."),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: pinkColor),
+                      ))
+                ],
+              ),
+            );
+            getData(orderId: tempOrder.id);
+            tempOrder = null;
+            return;
           }
-          print(destinationCoords[0].toString());
-          print(destinationCoords[1].toString());
-          directionPoints = await dio.get(
-              "https://api.mapbox.com/directions/v5/mapbox/driving/" +
-                  locationData.longitude.toString() +
-                  "," +
-                  locationData.latitude.toString() +
-                  ";" +
-                  destinationCoords[0].toString() +
-                  "," +
-                  destinationCoords[1].toString() +
-                  "?geometries=geojson&access_token=" +
-                  _accessToken);
+          // } catch (e) {
+          //   print("error" + e.toString());
+          //   Fluttertoast.showToast(
+          //       msg: "Something went Wrong! Please check address");
+          //   getData(orderId: tempOrder.id);
+          //   return;
+          // }
+          if (destinationCoords != null) {
+            print(destinationCoords[0].toString());
+            print(destinationCoords[1].toString());
+            directionPoints = await dio.get(
+                "https://api.mapbox.com/directions/v5/mapbox/driving/" +
+                    locationData.longitude.toString() +
+                    "," +
+                    locationData.latitude.toString() +
+                    ";" +
+                    destinationCoords[0].toString() +
+                    "," +
+                    destinationCoords[1].toString() +
+                    "?geometries=geojson&access_token=" +
+                    _accessToken);
+            print(directionPoints);
+          } else {
+            await showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text("Cannot Fetch Location"),
+                content:
+                    Text("Order id ${tempOrder.orderId} has invalid address."),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: pinkColor),
+                      ))
+                ],
+              ),
+            );
+            getData(orderId: tempOrder.id);
+            tempOrder = null;
+            return;
+          }
         }
         setState(() {
           userLocation = locationData;
@@ -103,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
               latitude: userLocation.latitude,
               longitude: userLocation.longitude);
           order = tempOrder;
-          if (order.orderId == null) {
+          if (order == null || order.orderId == null) {
             order = null;
             points = [];
           } else {
@@ -141,28 +209,18 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       print("not 200");
     }
-//    } catch (e) {
-//      print(e);
-//      showDialog(
-//          context: context,
-//          builder: (ctx) {
-//            return RetryDialog("Something Went Wrong!", getdata);
-//          },
-//          barrierDismissible: false);
-//    }
+    // } catch (e) {
+    //   print(e);
+    //   showDialog(
+    //       context: context,
+    //       builder: (ctx) {
+    //         return RetryDialog("Something Went Wrong!", getdata);
+    //       },
+    //       barrierDismissible: false);
+    // }
   }
 
   Future<Response> getPolylines(currentLocation) async {
-    print("https://api.mapbox.com/directions/v5/mapbox/driving/" +
-        currentLocation.longitude.toString() +
-        "," +
-        currentLocation.latitude.toString() +
-        ";" +
-        orderLoc[0].toString() +
-        "," +
-        orderLoc[1].toString() +
-        "?geometries=geojson&access_token=" +
-        _accessToken);
     Dio dio = Dio();
     var directionPoints = await dio.get(
         "https://api.mapbox.com/directions/v5/mapbox/driving/" +
@@ -223,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Response response =
           await dio.post(url.url + "order_action.php", data: orderData);
       Navigator.pop(loadContext);
-      getdata();
+      getData();
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Something went wrong!",
@@ -237,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getdata();
+    getData();
     initPlatformState();
   }
 
@@ -249,6 +307,11 @@ class _HomeScreenState extends State<HomeScreen> {
         await _directions.finishNavigation();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -372,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? Slidable(
                             actionPane: SlidableDrawerActionPane(),
                             actionExtentRatio: 0.25,
-                            child: HomeScreenOrder(order, getdata),
+                            child: HomeScreenOrder(order, getData),
                             actions: <Widget>[
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 13),

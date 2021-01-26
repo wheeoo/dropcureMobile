@@ -1,4 +1,3 @@
-
 import 'package:dropcure/Theme/colors.dart';
 import 'package:dropcure/models/order.dart';
 import 'package:dropcure/screens/home/home_screen_pages/customer_list.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -130,11 +128,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: infoCardBg,
-      appBar: GradientAppBar(
-        gradient: LinearGradient(
-          colors: [Colors.white, pinkColor],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, pinkColor],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+          ),
         ),
         actions: <Widget>[Image.asset("assets/images/logo.png")],
       ),
