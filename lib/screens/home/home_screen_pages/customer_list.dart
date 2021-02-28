@@ -57,7 +57,6 @@ class _CustomerListState extends State<CustomerList> {
           deliveries.putIfAbsent("totalDeliveries",
               () => data["data"]["order_count"]["deliveries"]);
           orders = order.data;
-          // filteredOrders = List.from(orders);
           filterList(selectedOrder);
           if (orders.length < 1) {
             ordersPresent = false;
@@ -127,7 +126,6 @@ class _CustomerListState extends State<CustomerList> {
   }
 
   changeOrderStatus(index) {
-    print(filteredOrders[index].dropNo);
     String msg = "";
     if (filteredOrders[index].orderStatus.toString().compareTo("1") == 0) {
       msg = "cancel";

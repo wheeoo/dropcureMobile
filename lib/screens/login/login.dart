@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:convert' as JSON;
 import 'dart:io' show Platform;
 
+import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:dropcure/Theme/colors.dart';
@@ -48,7 +49,11 @@ class _LoginState extends State<Login> {
     try {
       Dio dio = Dio();
       URL url = URL();
-      String deviceType = Platform.isAndroid ? "A" : Platform.isIOS ? "I" : "";
+      String deviceType = Platform.isAndroid
+          ? "A"
+          : Platform.isIOS
+              ? "I"
+              : "";
       FormData userData = new FormData.fromMap({
         "email": googleAccount.email.trim().toLowerCase(),
         "social_key": googleAccount.id,
@@ -109,8 +114,11 @@ class _LoginState extends State<Login> {
         try {
           Dio dio = Dio();
           URL url = URL();
-          String deviceType =
-              Platform.isAndroid ? "A" : Platform.isIOS ? "I" : "";
+          String deviceType = Platform.isAndroid
+              ? "A"
+              : Platform.isIOS
+                  ? "I"
+                  : "";
           FormData userData = new FormData.fromMap({
             "email": profile["email"].trim().toLowerCase(),
             "social_key": profile["id"],
@@ -158,6 +166,83 @@ class _LoginState extends State<Login> {
     }
   }
 
+  loginApple() async {
+    if (await AppleSignIn.isAvailable()) {
+      final AuthorizationResult result = await AppleSignIn.performRequests([
+        AppleIdRequest(requestedScopes: [
+          Scope.email,
+          Scope.fullName,
+        ])
+      ]);
+      switch (result.status) {
+        case AuthorizationStatus.authorized:
+          print(result.credential.user);
+          BuildContext loadContext;
+          showDialog(
+              context: context,
+              builder: (ctx) {
+                loadContext = ctx;
+                return LoadingDialog("Logging in please wait..");
+              },
+              barrierDismissible: false);
+          try {
+            Dio dio = Dio();
+            URL url = URL();
+            String deviceType = Platform.isAndroid
+                ? "A"
+                : Platform.isIOS
+                    ? "I"
+                    : "";
+            FormData userData = new FormData.fromMap({
+              "email": result.credential.email,
+              "social_key": result.credential.user ?? "",
+              "name": result.credential.fullName,
+              "login_type": "3",
+              "profile_pic": "",
+              "device_type": deviceType,
+              "device_token": await _getId(),
+            });
+            Response response =
+                await dio.post(url.url + "social_login.php", data: userData);
+            var data = json.decode(response.data);
+            if (data["status"]) {
+              User user = User.fromJson(data["data"]);
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setString('user_id', user.id.toString());
+              prefs.setString('login_type', "fb");
+              Navigator.pop(loadContext);
+              Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+            } else {
+              Navigator.pop(loadContext);
+              showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return ShowAlert(
+                        "Error Logging in!", data["message"].toString());
+                  });
+            }
+          } catch (e) {
+            Navigator.of(loadContext).pop();
+            showDialog(
+                context: context,
+                builder: (ctx) {
+                  return RetryDialog("Something Went Wrong!", login);
+                },
+                barrierDismissible: false);
+          }
+          break;
+        case AuthorizationStatus.error:
+          print("Sign in failed: ${result.error.localizedDescription}");
+          break;
+        case AuthorizationStatus.cancelled:
+          print('User cancelled');
+          break;
+      }
+    } else {
+      print('Apple SignIn is not available for your device');
+    }
+  }
+
   void forgotPasswordPopup() {
     showDialog(
         barrierDismissible: true,
@@ -192,7 +277,11 @@ class _LoginState extends State<Login> {
     URL url = URL();
     String email = emailController.text.trim().toLowerCase();
     String password = passwordController.text.trim();
-    String deviceType = Platform.isAndroid ? "A" : Platform.isIOS ? "I" : "";
+    String deviceType = Platform.isAndroid
+        ? "A"
+        : Platform.isIOS
+            ? "I"
+            : "";
     FormData userData = new FormData.fromMap({
       "username": email,
       "password": password,
@@ -227,6 +316,17 @@ class _LoginState extends State<Login> {
 //          },
 //          barrierDismissible: false);
 //    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isIOS) {
+      //check for ios if developing for both android & ios
+      AppleSignIn.onCredentialRevoked.listen((_) {
+        print("Credentials revoked");
+      });
+    }
   }
 
   @override
@@ -385,6 +485,20 @@ class _LoginState extends State<Login> {
                             _loginWithFB();
                           },
                         ),
+                        Platform.isIOS
+                            ? GestureDetector(
+                                child: Container(
+                                  height: 60,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle, color: pinkColor),
+                                  child: Image.asset("assets/images/apple.png"),
+                                ),
+                                onTap: () {
+                                  loginApple();
+                                },
+                              )
+                            : Container(),
                       ],
                     ),
                   )

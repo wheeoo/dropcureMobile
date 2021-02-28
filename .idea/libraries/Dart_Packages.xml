@@ -9,6 +9,13 @@
             </list>
           </value>
         </entry>
+        <entry key="apple_sign_in">
+          <value>
+            <list>
+              <option value="C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/apple_sign_in-0.1.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="archive">
           <value>
             <list>
@@ -664,6 +671,7 @@
     </properties>
     <CLASSES>
       <root url="file://C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/ansicolor-1.0.2/lib" />
+      <root url="file://C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/apple_sign_in-0.1.0/lib" />
       <root url="file://C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/archive-2.0.11/lib" />
       <root url="file://C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.5.2/lib" />
       <root url="file://C:/SDKs/flutter_windows_1.22.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0-nullsafety.1/lib" />
