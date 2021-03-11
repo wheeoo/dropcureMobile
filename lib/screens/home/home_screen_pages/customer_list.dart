@@ -8,7 +8,6 @@ import 'package:dropcure/models/order_status.dart';
 import 'package:dropcure/screens/home/widgets/change_status_alert.dart';
 import 'package:dropcure/screens/home/widgets/delivery_count_widget.dart';
 import 'package:dropcure/screens/home/widgets/info_card.dart';
-import 'package:dropcure/screens/login/widgets/retry_dialog.dart';
 import 'package:dropcure/screens/login/widgets/show_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,38 +15,67 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerList extends StatefulWidget {
+  final time;
+  final openDrawer;
+
+  CustomerList(this.time, this.openDrawer, {Key key}) : super(key: key);
+
   @override
-  _CustomerListState createState() => _CustomerListState();
+  CustomerListState createState() => CustomerListState();
 }
 
-class _CustomerListState extends State<CustomerList> {
+class CustomerListState extends State<CustomerList> {
   List<Order> orders;
   List<Order> filteredOrders;
   bool isLoaded = false;
   bool ordersPresent = false;
-  DateTime now = DateTime.now();
+  DateTime now;
   Map<String, dynamic> deliveries = {};
   int selectedOrder = -1;
   int c = -1;
   final ScrollController _scrollController = ScrollController();
+  String currentDate = "";
   getOrders() async {
+    print(now.toString());
     c++;
     deliveries = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
-    try {
-      Dio dio = Dio();
-      URL url = URL();
-      FormData userData = new FormData.fromMap({
-        "user_id": id,
-      });
-      Response response =
-          await dio.post(url.url + "get_all_order.php", data: userData);
-      Map<String, dynamic> data = json.decode(response.data);
-      OrderStatus order = OrderStatus.fromRawJson(response.data);
+    // try {
+    Dio dio = Dio();
+    URL url = URL();
+    FormData userData = new FormData.fromMap({
+      "user_id": id,
+    });
+    Response response =
+        await dio.post(url.url + "get_all_order.php", data: userData);
+    Map<String, dynamic> data = json.decode(response.data);
+    print(data);
+    OrderStatus order = OrderStatus.fromRawJson(response.data);
 
-      if (order.status) {
-        setState(() {
+    if (order.status) {
+      setState(() {
+        deliveries.putIfAbsent("completedDeliveries",
+            () => data["data"]["order_count"]["complete"]);
+        deliveries.putIfAbsent(
+            "openDeliveries", () => data["data"]["order_count"]["open"]);
+        deliveries.putIfAbsent(
+            "cancelledDeliveries", () => data["data"]["order_count"]["cancel"]);
+        deliveries.putIfAbsent(
+            "totalDeliveries", () => data["data"]["order_count"]["deliveries"]);
+        orders = order.data;
+        filterByDate(selectedOrder);
+        if (orders.length < 1) {
+          ordersPresent = false;
+        } else {
+          ordersPresent = true;
+        }
+        isLoaded = true;
+      });
+    } else {
+      setState(() {
+        if (data["data"].length > 0) {
+          print(data["data"]["order_count"]);
           deliveries.putIfAbsent("completedDeliveries",
               () => data["data"]["order_count"]["complete"]);
           deliveries.putIfAbsent(
@@ -56,39 +84,19 @@ class _CustomerListState extends State<CustomerList> {
               () => data["data"]["order_count"]["cancel"]);
           deliveries.putIfAbsent("totalDeliveries",
               () => data["data"]["order_count"]["deliveries"]);
-          orders = order.data;
-          filterList(selectedOrder);
-          if (orders.length < 1) {
-            ordersPresent = false;
-          } else {
-            ordersPresent = true;
-          }
-          isLoaded = true;
-        });
-      } else {
-        setState(() {
-          if (data["data"].length > 0) {
-            deliveries.putIfAbsent("completedDeliveries",
-                () => data["data"]["order_count"]["complete"]);
-            deliveries.putIfAbsent(
-                "openDeliveries", () => data["data"]["order_count"]["open"]);
-            deliveries.putIfAbsent("cancelledDeliveries",
-                () => data["data"]["order_count"]["cancel"]);
-            deliveries.putIfAbsent("totalDeliveries",
-                () => data["data"]["order_count"]["deliveries"]);
-          }
-          ordersPresent = false;
-          isLoaded = true;
-        });
-      }
-    } catch (e) {
-      showDialog(
-          context: context,
-          builder: (ctx) {
-            return RetryDialog("Something Went Wrong!", getOrders);
-          },
-          barrierDismissible: false);
+        }
+        ordersPresent = false;
+        isLoaded = true;
+      });
     }
+    // } catch (e) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (ctx) {
+    //         return RetryDialog("Something Went Wrong!", getOrders);
+    //       },
+    //       barrierDismissible: false);
+    // }
   }
 
   changeStatus(action, index) async {
@@ -156,28 +164,55 @@ class _CustomerListState extends State<CustomerList> {
   void initState() {
     super.initState();
     getOrders();
+    now = widget.time;
+    currentDate = DateFormat('EEEE, MMMM d, yyyy').format(now);
   }
 
   filterList(int orderStatus) {
+    // setState(() {
+    selectedOrder = orderStatus;
+    if (orderStatus == -1) {
+      filteredOrders = List.from(filteredOrders);
+    } else if (orderStatus == 2) {
+      filteredOrders = List.from(filteredOrders.where((element) =>
+          int.parse(element.orderStatus) == 2 ||
+          int.parse(element.orderStatus) == 3));
+    } else {
+      filteredOrders = List.from(filteredOrders
+          .where((element) => int.parse(element.orderStatus) == orderStatus));
+    }
+    if (c > 0) {
+      _scrollController.animateTo(
+        0.0,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+    // });
+  }
+
+  filterByDate(int index) {
+    print("FILTER BY DATE");
+    deliveries["cancelledDeliveries"] = 0;
+    deliveries["openDeliveries"] = 0;
+    deliveries["completedDeliveries"] = 0;
     setState(() {
-      selectedOrder = orderStatus;
-      if (orderStatus == -1) {
-        filteredOrders = List.from(orders);
-      } else if (orderStatus == 2) {
-        filteredOrders = List.from(orders.where((element) =>
-            int.parse(element.orderStatus) == 2 ||
-            int.parse(element.orderStatus) == 3));
-      } else {
-        filteredOrders = List.from(orders
-            .where((element) => int.parse(element.orderStatus) == orderStatus));
-      }
-      if (c > 0) {
-        _scrollController.animateTo(
-          0.0,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 300),
-        );
-      }
+      filteredOrders = List.from(orders.where((element) {
+        if (now.difference(element.createdAt).inDays == 0) {
+          print(element.orderStatus.runtimeType);
+          if (element.orderStatus == "2" || element.orderStatus == "3") {
+            deliveries["cancelledDeliveries"]++;
+          } else if (element.orderStatus == "0") {
+            deliveries["openDeliveries"]++;
+          } else if (element.orderStatus == "1") {
+            deliveries["completedDeliveries"]++;
+          }
+          return true;
+        }
+        return false;
+      }));
+      deliveries["totalDeliveries"] = filteredOrders.length;
+      filterList(index);
     });
   }
 
@@ -194,12 +229,15 @@ class _CustomerListState extends State<CustomerList> {
     );
   }
 
+  change(newTime) {
+    now = newTime;
+    filterByDate(-1);
+  }
+
   @override
   Widget build(BuildContext context) {
-    String currentDate = DateFormat('EEEE, MMMM d yyyy').format(now);
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
-    int c = 0;
     return isLoaded
         ? Column(
             children: <Widget>[
@@ -212,16 +250,24 @@ class _CustomerListState extends State<CustomerList> {
                   child: Column(
                     children: [
                       Text(
-                        "Completed Deliveries",
+                        "Delivery Status Dashboard",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 24),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 15,
                       ),
-                      Text(
-                        currentDate,
-                        style: TextStyle(fontSize: 16),
+                      GestureDetector(
+                        child: Text(
+                          DateFormat('EEEE, MMMM d, yyyy').format(now),
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: pinkColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onTap: () {
+                          widget.openDrawer();
+                        },
                       ),
                     ],
                   ),
@@ -235,8 +281,9 @@ class _CustomerListState extends State<CustomerList> {
                   deliveries["openDeliveries"] ??= 0,
                   deliveries["cancelledDeliveries"] ??= 0,
                   isClickable: true,
-                  onClick: filterList,
+                  onClick: filterByDate,
                   selected: selectedOrder,
+                  small: true,
                 ),
                 color: Colors.white,
               ),

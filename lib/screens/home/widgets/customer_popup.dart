@@ -115,13 +115,13 @@ class _CustomerPopupState extends State<CustomerPopup> {
     }
 
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       scrollable: true,
       contentPadding: EdgeInsets.all(0),
       content: Container(
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
             colors: [
               lightPinkColor,

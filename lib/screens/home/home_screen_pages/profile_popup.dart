@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:dropcure/Theme/colors.dart';
 import 'package:dropcure/Theme/url.dart';
@@ -65,7 +66,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
         width: width * 0.92,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
           gradient: LinearGradient(
               colors: [Colors.white, lightPinkColor],
               begin: Alignment.topCenter,

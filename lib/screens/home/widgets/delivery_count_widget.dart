@@ -10,16 +10,20 @@ class DeliveryCountWidget extends StatelessWidget {
   final bool isClickable;
   final Function onClick;
   final int selected;
+  final bool small;
   DeliveryCountWidget(this.totalDeliveries, this.completedDeliveries,
       this.openDeliveries, this.canceledDeliveries,
-      {this.isClickable = false, this.onClick, this.selected});
+      {this.isClickable = false,
+      this.onClick,
+      this.selected,
+      this.small = false});
   @override
   Widget build(BuildContext context) {
     TextStyle deliveryDataStyle =
-        TextStyle(fontWeight: FontWeight.bold, fontSize: 34);
+        TextStyle(fontWeight: FontWeight.bold, fontSize: small ? 28 : 34);
     TextStyle deliveryLabelStyle = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: small ? 13 : 16,
     );
     return IgnorePointer(
       ignoring: !isClickable,
@@ -39,8 +43,12 @@ class DeliveryCountWidget extends StatelessWidget {
                                 )
                               : null,
                           // padding: selected == -1 ? EdgeInsets.all(15) : null,
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 4,
+                          height: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
+                          width: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
                         ),
                         Positioned.fill(
                           child: Align(
@@ -91,8 +99,12 @@ class DeliveryCountWidget extends StatelessWidget {
                                 )
                               : null,
                           // padding: selected == -1 ? EdgeInsets.all(15) : null,
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 4,
+                          height: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
+                          width: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
                         ),
                         Positioned.fill(
                           child: Align(
@@ -143,8 +155,12 @@ class DeliveryCountWidget extends StatelessWidget {
                                 )
                               : null,
                           // padding: selected == -1 ? EdgeInsets.all(15) : null,
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 4,
+                          height: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
+                          width: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
                         ),
                         Positioned.fill(
                           child: Align(
@@ -195,8 +211,12 @@ class DeliveryCountWidget extends StatelessWidget {
                                 )
                               : null,
                           // padding: selected == -1 ? EdgeInsets.all(15) : null,
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 4,
+                          height: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
+                          width: small
+                              ? MediaQuery.of(context).size.width / 5
+                              : MediaQuery.of(context).size.width / 4,
                         ),
                         Positioned.fill(
                           child: Align(
