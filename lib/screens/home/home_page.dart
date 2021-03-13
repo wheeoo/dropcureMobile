@@ -184,220 +184,264 @@ class _HomePageState extends State<HomePage> {
       key: key,
       backgroundColor: infoCardBg,
       drawer: showDrawer
-          ? Drawer(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).padding.top),
-                      color: pinkColor,
-                      child: Column(
+          ? Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Drawer(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
+                        color: pinkColor,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Container(
+                                height: MediaQuery.of(context).size.width * .2,
+                                width: MediaQuery.of(context).size.width * .2,
+                                decoration: BoxDecoration(
+                                    image: image == null
+                                        ? null
+                                        : DecorationImage(
+                                            image: NetworkImage(image),
+                                            fit: BoxFit.cover),
+                                    shape: BoxShape.circle),
+                              ),
+                              title: Text(
+                                "Delivery Dashboard",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Partner: ${name ?? ''}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                  Text(
+                                    "EmpId: ${details == null ? "" : details["user"]["id"]}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Select Date",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        height: 200,
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: CupertinoTheme(
+                          data: CupertinoThemeData(
+                            textTheme: CupertinoTextThemeData(
+                              dateTimePickerTextStyle: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          child: CupertinoDatePicker(
+                            initialDateTime: pickerDate,
+                            onDateTimeChanged: (date) {
+                              pickerDate = date;
+                            },
+                            mode: CupertinoDatePickerMode.date,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
                         children: [
-                          ListTile(
-                            leading: Container(
-                              height: MediaQuery.of(context).size.width * .2,
-                              width: MediaQuery.of(context).size.width * .2,
-                              decoration: BoxDecoration(
-                                  image: image == null
-                                      ? null
-                                      : DecorationImage(
-                                          image: NetworkImage(image),
-                                          fit: BoxFit.cover),
-                                  shape: BoxShape.circle),
-                            ),
-                            title: Text(
-                              "Delivery Dashboard",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            ),
-                            subtitle: Text(
-                              "Partner: ${name ?? ''}",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey,
                             ),
                           ),
                           SizedBox(
-                            height: 20,
+                            width: 10,
                           ),
                           Text(
-                            "Select Date",
-                            style: TextStyle(color: Colors.white, fontSize: 28),
+                            "Delivery Data To Date",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Container(
-                      height: 200,
-                      child: CupertinoTheme(
-                        data: CupertinoThemeData(
-                          textTheme: CupertinoTextThemeData(
-                            dateTimePickerTextStyle: TextStyle(
-                                fontSize: 24,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        child: CupertinoDatePicker(
-                          initialDateTime: pickerDate,
-                          onDateTimeChanged: (date) {
-                            pickerDate = date;
-                          },
-                          mode: CupertinoDatePickerMode.date,
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        // padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: Table(
+                          columnWidths: {1: IntrinsicColumnWidth()},
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            TableRow(children: [
+                              Icon(Icons.delivery_dining),
+                              Text(
+                                "Delivery Total",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black),
+                                child: Center(
+                                  child: Text(
+                                    details == null
+                                        ? ""
+                                        : details["order"]["deliveries"]
+                                            .toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            TableRow(children: [
+                              Icon(Icons.check_circle_outline_sharp),
+                              Text(
+                                "Delivery Completed",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black),
+                                child: Center(
+                                  child: Text(
+                                    details == null
+                                        ? ""
+                                        : details["order"]["complete"]
+                                            .toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            TableRow(children: [
+                              Icon(Icons.remove_circle_outline),
+                              Text(
+                                "Delivery Open",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black),
+                                child: Center(
+                                  child: Text(
+                                    details == null
+                                        ? ""
+                                        : details["order"]["open"].toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            TableRow(children: [
+                              Icon(
+                                Icons.not_interested_sharp,
+                                color: Colors.red,
+                              ),
+                              Text(
+                                "Delivery Cancelled",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black),
+                                child: Center(
+                                  child: Text(
+                                    details == null
+                                        ? ""
+                                        : details["order"]["cancel"].toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RaisedButton(
-                            color: Colors.white,
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: pinkColor),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 30),
+                        child: Divider(
+                          color: Colors.grey,
                         ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: RaisedButton(
-                            color: pinkColor,
-                            child: Text(
-                              "Submit",
-                              style: TextStyle(color: Colors.white),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            child: Image.asset(
+                              "assets/images/submit.png",
+                              height: 40,
+                              width: 40,
                             ),
-                            onPressed: () {
+                            onTap: () {
                               Navigator.pop(context);
                               print(pickerDate);
                               orderKey.currentState.change(pickerDate);
                             },
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          "Delivery Data To Date",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Table(
-                      columnWidths: {1: IntrinsicColumnWidth()},
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(children: [
-                          Icon(Icons.delivery_dining),
-                          Text("Delivery Total"),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: Center(
-                              child: Text(
-                                details == null
-                                    ? ""
-                                    : details["order"]["deliveries"].toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
+                          // SizedBox(
+                          //   width: 30,
+                          // ),
+                          GestureDetector(
+                            child: Image.asset(
+                              "assets/images/exit.png",
+                              height: 40,
+                              width: 40,
                             ),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                        ]),
-                        TableRow(children: [
-                          Icon(Icons.check_circle_outline_sharp),
-                          Text("Delivery Completed"),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: Center(
-                              child: Text(
-                                details == null
-                                    ? ""
-                                    : details["order"]["complete"].toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          Icon(Icons.remove_circle_outline),
-                          Text("Delivery Open"),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: Center(
-                              child: Text(
-                                details == null
-                                    ? ""
-                                    : details["order"]["open"].toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          Icon(
-                            Icons.not_interested_sharp,
-                            color: Colors.red,
-                          ),
-                          Text("Delivery Cancelled"),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: Center(
-                              child: Text(
-                                details == null
-                                    ? ""
-                                    : details["order"]["cancel"].toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
