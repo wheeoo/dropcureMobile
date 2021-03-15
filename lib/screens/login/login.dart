@@ -351,6 +351,7 @@ class _LoginState extends State<Login> {
                   TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
+                        errorStyle: TextStyle(color: Colors.white),
                         hintText: "Username",
                         prefixIcon: Container(
                           height: 3,
@@ -380,6 +381,7 @@ class _LoginState extends State<Login> {
                   TextFormField(
                     controller: passwordController,
                     decoration: InputDecoration(
+                      errorStyle: TextStyle(color: Colors.white),
                       hintText: "Password",
                       prefixIcon: Container(
                         height: 3,
