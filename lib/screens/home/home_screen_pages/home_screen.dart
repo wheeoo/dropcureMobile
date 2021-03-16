@@ -6,6 +6,7 @@ import 'package:dropcure/Theme/url.dart';
 import 'package:dropcure/models/order.dart';
 import 'package:dropcure/screens/home/widgets/home_screen_order.dart';
 import 'package:dropcure/screens/login/widgets/loading_dialog.dart';
+import 'package:dropcure/screens/login/widgets/retry_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart'
@@ -42,182 +43,161 @@ class _HomeScreenState extends State<HomeScreen> {
     var locationData = await location.getLocation();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String id = prefs.getString('user_id');
-    // try {
-    Dio dio = Dio();
-    URL url = URL();
-    var params = {"user_id": id};
-    if (orderId != null) {
-      params.addAll({"order_id": orderId});
-    }
-    FormData userData = new FormData.fromMap(params);
-    print(userData.fields);
-    print(id);
-    Response response =
-        await dio.post(url.url + "homepage.php", data: userData);
-    if (response.statusCode == 200) {
-      var data = json.decode(response.data);
-      if (data["status"]) {
-        Response directionPoints;
-        Order tempOrder = Order.fromJson(data["data"]["order"]);
-        var destinationCoords;
-        if (tempOrder.orderId != null) {
-          // try {
-          MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
-          ForwardGeocoding forwardModel = await geocoding.forwardModel(
-              tempOrder.customerAddress +
-                  " " +
-                  tempOrder.state.toString().toUpperCase());
-          print("ADDRESS");
-          print(tempOrder.customerAddress);
-          print(tempOrder.orderId);
-          print(tempOrder.state);
-          // print(forwardModel.toJson());
-          if (forwardModel != null &&
-              tempOrder.customerAddress != null &&
-              tempOrder.customerAddress.toString().isNotEmpty &&
-              tempOrder.state != null &&
-              tempOrder.state.toString().isNotEmpty) {
-            /*
-
-               */
-            print(forwardModel.toJson());
-            for (var i = 0; i < forwardModel.features.length; i++) {
-              var j = forwardModel.features[i].context.length - 2;
-              if (forwardModel.features[i].context[j].shortCode
-                  .toString()
-                  .toLowerCase()
-                  .contains(tempOrder.state.toString().toLowerCase())) {
-                print("YES");
-                destinationCoords =
-                    forwardModel.features[i].geometry.coordinates;
-                break;
-              }
-            }
-            print("AAJO");
-            print(destinationCoords);
-          } else {
-            await showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text("Cannot Fetch Location"),
-                content:
-                    Text("Order id ${tempOrder.orderId} has invalid address."),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: pinkColor),
-                      ))
-                ],
-              ),
-            );
-            getData(orderId: tempOrder.id);
-            tempOrder = null;
-            return;
-          }
-          // } catch (e) {
-          //   print("error" + e.toString());
-          //   Fluttertoast.showToast(
-          //       msg: "Something went Wrong! Please check address");
-          //   getData(orderId: tempOrder.id);
-          //   return;
-          // }
-          if (destinationCoords != null) {
-            print(destinationCoords[0].toString());
-            print(destinationCoords[1].toString());
-            directionPoints = await dio.get(
-                "https://api.mapbox.com/directions/v5/mapbox/driving/" +
-                    locationData.longitude.toString() +
-                    "," +
-                    locationData.latitude.toString() +
-                    ";" +
-                    destinationCoords[0].toString() +
-                    "," +
-                    destinationCoords[1].toString() +
-                    "?geometries=geojson&access_token=" +
-                    _accessToken);
-            print(directionPoints);
-          } else {
-            await showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text("Cannot Fetch Location"),
-                content:
-                    Text("Order id ${tempOrder.orderId} has invalid address."),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: pinkColor),
-                      ))
-                ],
-              ),
-            );
-            getData(orderId: tempOrder.id);
-            tempOrder = null;
-            return;
-          }
-        }
-        setState(() {
-          userLocation = locationData;
-          _origin = Loc.Location(
-              name: "Origin",
-              latitude: userLocation.latitude,
-              longitude: userLocation.longitude);
-          order = tempOrder;
-          if (order == null || order.orderId == null) {
-            order = null;
-            points = [];
-          } else {
-            orderLoc = destinationCoords;
-            points =
-                directionPoints.data["routes"][0]["geometry"]["coordinates"];
-            _destination = Loc.Location(
-                name: "Destination",
-                latitude: double.parse(orderLoc[1].toString()),
-                longitude: double.parse(orderLoc[0].toString()));
-          }
-          isLoaded = true;
-        });
-        if (order != null) {
-          location.changeSettings(interval: 5000);
-          location.onLocationChanged
-              .listen((LocationData currentLocation) async {
-            if (mounted) {
-              Response response = await getPolylines(currentLocation);
-              setState(() {
-                points = response.data["routes"][0]["geometry"]["coordinates"];
-                userLocation = currentLocation;
-                _origin = Loc.Location(
-                    name: "Origin",
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude);
-              });
-            }
-          });
-        }
-      } else {
-        print("not ok");
-        print(data);
+    try {
+      Dio dio = Dio();
+      URL url = URL();
+      var params = {"user_id": id};
+      if (orderId != null) {
+        params.addAll({"order_id": orderId});
       }
-    } else {
-      print("not 200");
+      FormData userData = new FormData.fromMap(params);
+      Response response =
+          await dio.post(url.url + "homepage.php", data: userData);
+      if (response.statusCode == 200) {
+        var data = json.decode(response.data);
+        if (data["status"]) {
+          Response directionPoints;
+          Order tempOrder = Order.fromJson(data["data"]["order"]);
+          var destinationCoords;
+          if (tempOrder.orderId != null) {
+            // try {
+            MapboxGeocoding geocoding = MapboxGeocoding(_accessToken);
+            ForwardGeocoding forwardModel = await geocoding.forwardModel(
+                tempOrder.customerAddress +
+                    " " +
+                    tempOrder.state.toString().toUpperCase());
+            if (forwardModel != null &&
+                tempOrder.customerAddress != null &&
+                tempOrder.customerAddress.toString().isNotEmpty &&
+                tempOrder.state != null &&
+                tempOrder.state.toString().isNotEmpty) {
+              for (var i = 0; i < forwardModel.features.length; i++) {
+                var j = forwardModel.features[i].context.length - 2;
+                if (forwardModel.features[i].context[j].shortCode
+                    .toString()
+                    .toLowerCase()
+                    .contains(tempOrder.state.toString().toLowerCase())) {
+                  destinationCoords =
+                      forwardModel.features[i].geometry.coordinates;
+                  break;
+                }
+              }
+            } else {
+              await showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text("Cannot Fetch Location"),
+                  content: Text(
+                      "Order id ${tempOrder.orderId} has invalid address."),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                        child: Text(
+                          "Ok",
+                          style: TextStyle(color: pinkColor),
+                        ))
+                  ],
+                ),
+              );
+              getData(orderId: tempOrder.id);
+              tempOrder = null;
+              return;
+            }
+            // } catch (e) {
+            //   print("error" + e.toString());
+            //   Fluttertoast.showToast(
+            //       msg: "Something went Wrong! Please check address");
+            //   getData(orderId: tempOrder.id);
+            //   return;
+            // }
+            if (destinationCoords != null) {
+              directionPoints = await dio.get(
+                  "https://api.mapbox.com/directions/v5/mapbox/driving/" +
+                      locationData.longitude.toString() +
+                      "," +
+                      locationData.latitude.toString() +
+                      ";" +
+                      destinationCoords[0].toString() +
+                      "," +
+                      destinationCoords[1].toString() +
+                      "?geometries=geojson&access_token=" +
+                      _accessToken);
+            } else {
+              await showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text("Cannot Fetch Location"),
+                  content: Text(
+                      "Order id ${tempOrder.orderId} has invalid address."),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                        },
+                        child: Text(
+                          "Ok",
+                          style: TextStyle(color: pinkColor),
+                        ))
+                  ],
+                ),
+              );
+              getData(orderId: tempOrder.id);
+              tempOrder = null;
+              return;
+            }
+          }
+          setState(() {
+            userLocation = locationData;
+            _origin = Loc.Location(
+                name: "Origin",
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude);
+            order = tempOrder;
+            if (order == null || order.orderId == null) {
+              order = null;
+              points = [];
+            } else {
+              orderLoc = destinationCoords;
+              points =
+                  directionPoints.data["routes"][0]["geometry"]["coordinates"];
+              _destination = Loc.Location(
+                  name: "Destination",
+                  latitude: double.parse(orderLoc[1].toString()),
+                  longitude: double.parse(orderLoc[0].toString()));
+            }
+            isLoaded = true;
+          });
+          if (order != null) {
+            location.changeSettings(interval: 5000);
+            location.onLocationChanged
+                .listen((LocationData currentLocation) async {
+              if (mounted) {
+                Response response = await getPolylines(currentLocation);
+                setState(() {
+                  points =
+                      response.data["routes"][0]["geometry"]["coordinates"];
+                  userLocation = currentLocation;
+                  _origin = Loc.Location(
+                      name: "Origin",
+                      latitude: userLocation.latitude,
+                      longitude: userLocation.longitude);
+                });
+              }
+            });
+          }
+        } else {}
+      } else {}
+    } catch (e) {
+      print(e);
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return RetryDialog("Something Went Wrong!", getData);
+          },
+          barrierDismissible: false);
     }
-    // } catch (e) {
-    //   print(e);
-    //   showDialog(
-    //       context: context,
-    //       builder: (ctx) {
-    //         return RetryDialog("Something Went Wrong!", getdata);
-    //       },
-    //       barrierDismissible: false);
-    // }
   }
 
   Future<Response> getPolylines(currentLocation) async {

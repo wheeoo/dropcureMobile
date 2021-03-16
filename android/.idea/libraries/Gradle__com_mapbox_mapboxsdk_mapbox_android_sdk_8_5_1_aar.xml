@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.mapbox.mapboxsdk:mapbox-android-sdk:8.5.1@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8a5c9aabe5c6579194ab47f46401625/jetified-mapbox-android-sdk-8.5.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32ba1a8af54410764d96cdd7c4796c83/jetified-mapbox-android-sdk-8.5.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8a5c9aabe5c6579194ab47f46401625/jetified-mapbox-android-sdk-8.5.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8a5c9aabe5c6579194ab47f46401625/jetified-mapbox-android-sdk-8.5.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8a5c9aabe5c6579194ab47f46401625/jetified-mapbox-android-sdk-8.5.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32ba1a8af54410764d96cdd7c4796c83/jetified-mapbox-android-sdk-8.5.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32ba1a8af54410764d96cdd7c4796c83/jetified-mapbox-android-sdk-8.5.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/32ba1a8af54410764d96cdd7c4796c83/jetified-mapbox-android-sdk-8.5.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mapbox.mapboxsdk/mapbox-android-sdk/8.5.1/400d2989f69f6623860efad0abe8b4020cdb7062/mapbox-android-sdk-8.5.1-javadoc.jar!/" />

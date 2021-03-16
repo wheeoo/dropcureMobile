@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.mapbox.navigator:mapbox-navigation-native:7.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6577c59443098c5f5d973f784b1fb574/jetified-mapbox-navigation-native-7.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6577c59443098c5f5d973f784b1fb574/jetified-mapbox-navigation-native-7.0.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6577c59443098c5f5d973f784b1fb574/jetified-mapbox-navigation-native-7.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a24922d3f7d8b610b7d419f45266c5b/jetified-mapbox-navigation-native-7.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a24922d3f7d8b610b7d419f45266c5b/jetified-mapbox-navigation-native-7.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a24922d3f7d8b610b7d419f45266c5b/jetified-mapbox-navigation-native-7.0.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
