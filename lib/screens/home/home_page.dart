@@ -431,6 +431,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
+
                               Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),

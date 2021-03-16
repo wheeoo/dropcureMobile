@@ -461,7 +461,7 @@ class _LoginState extends State<Login> {
                   Container(
                     padding: EdgeInsets.only(top: 20),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         GestureDetector(
                           child: Container(
@@ -475,6 +475,7 @@ class _LoginState extends State<Login> {
                             signInWithGoogle();
                           },
                         ),
+                        SizedBox(width: 20),
                         GestureDetector(
                           child: Container(
                             height: 60,
@@ -487,6 +488,7 @@ class _LoginState extends State<Login> {
                             _loginWithFB();
                           },
                         ),
+                        SizedBox(width: Platform.isIOS ? 20 : 0),
                         Platform.isIOS
                             ? GestureDetector(
                                 child: Container(
@@ -494,7 +496,11 @@ class _LoginState extends State<Login> {
                                   width: 60,
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle, color: pinkColor),
-                                  child: Image.asset("assets/images/apple.png"),
+                                  child: Center(
+                                      child: Image.asset(
+                                    "assets/images/apple.png",
+                                    height: 45,
+                                  )),
                                 ),
                                 onTap: () {
                                   loginApple();
