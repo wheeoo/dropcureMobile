@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dropcure',
+      title: 'Dropcure Driver',
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
       home: SplashScreen(),
       routes: {
